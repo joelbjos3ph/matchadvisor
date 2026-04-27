@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = "notifications@matchadvisor.sg";
-const TO = "hello@matchadvisor.sg";
+const FROM = "onboarding@resend.dev";
+const TO = "joelbjos3ph@gmail.com";
 
 const TYPE_LABELS: Record<string, string> = {
   financial_advisor: "Financial Advisor",

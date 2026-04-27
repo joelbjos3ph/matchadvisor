@@ -1,8 +1,6 @@
 import { Resend } from "resend";
 import { NextRequest, NextResponse } from "next/server";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const FROM = "onboarding@resend.dev";
 const TO = "joelbjos3ph@gmail.com";
 
@@ -45,6 +43,7 @@ function emailShell(title: string, rows: string) {
 }
 
 export async function POST(req: NextRequest) {
+  const resend = new Resend(process.env.RESEND_API_KEY);
   const body = await req.json();
 
   let subject: string;

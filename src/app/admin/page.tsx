@@ -8,12 +8,6 @@ import { supabase } from "@/lib/supabase";
 const PASSWORD = "matchadvisor2026";
 const AUTH_KEY = "ma_admin_auth";
 
-const TYPE_LABELS: Record<string, string> = {
-  financial_advisor: "Financial Advisor",
-  property_agent: "Property Agent",
-  interior_designer: "Interior Designer",
-};
-
 type Professional = {
   id: string;
   name: string;

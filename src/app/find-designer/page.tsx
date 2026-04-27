@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/lib/supabase";
 
 const STEPS = ["Contact", "Your Space", "Budget & Timing"];
 
@@ -47,6 +48,8 @@ type FormData = {
 export default function FindDesignerPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [data, setData] = useState<FormData>({
     name: "",
     email: "",
@@ -62,6 +65,35 @@ export default function FindDesignerPage() {
     if (step === 1) return data.propertyType && data.renoType;
     if (step === 2) return data.budget && data.startDate;
     return true;
+  }
+
+  async function handleSubmit() {
+    setLoading(true);
+    setSubmitError(null);
+
+    const { error } = await supabase.from("consumer_leads").insert({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      category: "interior_designer",
+      details: {
+        propertyType: data.propertyType,
+        renoType: data.renoType,
+        budget: data.budget,
+        startDate: data.startDate,
+      },
+      status: "new",
+    });
+
+    setLoading(false);
+
+    if (error) {
+      console.error("[Supabase error — consumer_leads designer insert]", error);
+      setSubmitError(`Error: ${error.message}`);
+      return;
+    }
+
+    setSubmitted(true);
   }
 
   const propertyLabel = PROPERTY_TYPES.find((p) => p.value === data.propertyType)?.label ?? "";
@@ -221,6 +253,10 @@ export default function FindDesignerPage() {
                   </div>
                 )}
 
+                {submitError && (
+                  <p className="mt-4 text-sm text-red-500 text-center">{submitError}</p>
+                )}
+
                 {/* Navigation */}
                 <div className={`flex mt-8 ${step > 0 ? "justify-between" : "justify-end"}`}>
                   {step > 0 && (
@@ -241,14 +277,16 @@ export default function FindDesignerPage() {
                     </button>
                   ) : (
                     <button
-                      onClick={() => setSubmitted(true)}
-                      disabled={!canProceed()}
+                      onClick={handleSubmit}
+                      disabled={!canProceed() || loading}
                       className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
                     >
-                      Find My Designer
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                      </svg>
+                      {loading ? "Submitting…" : "Find My Designer"}
+                      {!loading && (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      )}
                     </button>
                   )}
                 </div>

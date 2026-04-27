@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/lib/supabase";
 
 const STEPS = ["Contact", "Your Property", "Timeline"];
 
@@ -44,6 +45,8 @@ type FormData = {
 export default function FindAgentPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [data, setData] = useState<FormData>({
     name: "",
     email: "",
@@ -61,6 +64,35 @@ export default function FindAgentPage() {
     if (step === 1) return data.intent && data.propertyType && data.budget;
     if (step === 2) return data.timeline;
     return true;
+  }
+
+  async function handleSubmit() {
+    setLoading(true);
+    setSubmitError(null);
+
+    const { error } = await supabase.from("consumer_leads").insert({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      category: "property_agent",
+      details: {
+        intent: data.intent,
+        propertyType: data.propertyType,
+        budget: data.budget,
+        timeline: data.timeline,
+      },
+      status: "new",
+    });
+
+    setLoading(false);
+
+    if (error) {
+      console.error("[Supabase error — consumer_leads agent insert]", error);
+      setSubmitError(`Error: ${error.message}`);
+      return;
+    }
+
+    setSubmitted(true);
   }
 
   return (
@@ -217,6 +249,10 @@ export default function FindAgentPage() {
                   </div>
                 )}
 
+                {submitError && (
+                  <p className="mt-4 text-sm text-red-500 text-center">{submitError}</p>
+                )}
+
                 {/* Navigation */}
                 <div className={`flex mt-8 ${step > 0 ? "justify-between" : "justify-end"}`}>
                   {step > 0 && (
@@ -237,14 +273,16 @@ export default function FindAgentPage() {
                     </button>
                   ) : (
                     <button
-                      onClick={() => setSubmitted(true)}
-                      disabled={!canProceed()}
+                      onClick={handleSubmit}
+                      disabled={!canProceed() || loading}
                       className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
                     >
-                      Find My Agent
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                      </svg>
+                      {loading ? "Submitting…" : "Find My Agent"}
+                      {!loading && (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      )}
                     </button>
                   )}
                 </div>

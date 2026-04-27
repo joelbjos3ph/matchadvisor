@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/lib/supabase";
 
 const STEPS = ["Contact", "Your Needs", "Details"];
 
@@ -36,6 +37,8 @@ type FormData = {
 export default function FindAdvisorPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [data, setData] = useState<FormData>({
     name: "",
     email: "",
@@ -62,7 +65,32 @@ export default function FindAdvisorPage() {
     return true;
   }
 
-  function handleSubmit() {
+  async function handleSubmit() {
+    setLoading(true);
+    setSubmitError(null);
+
+    const { error } = await supabase.from("consumer_leads").insert({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      category: "financial_advisor",
+      details: {
+        helpWith: data.helpWith,
+        ageRange: data.ageRange,
+        incomeRange: data.incomeRange,
+        concerns: data.concerns,
+      },
+      status: "new",
+    });
+
+    setLoading(false);
+
+    if (error) {
+      console.error("[Supabase error — consumer_leads advisor insert]", error);
+      setSubmitError(`Error: ${error.message}`);
+      return;
+    }
+
     setSubmitted(true);
   }
 
@@ -214,6 +242,10 @@ export default function FindAdvisorPage() {
                   </div>
                 )}
 
+                {submitError && (
+                  <p className="mt-4 text-sm text-red-500 text-center">{submitError}</p>
+                )}
+
                 {/* Navigation */}
                 <div className={`flex mt-8 ${step > 0 ? "justify-between" : "justify-end"}`}>
                   {step > 0 && (
@@ -238,13 +270,15 @@ export default function FindAdvisorPage() {
                   ) : (
                     <button
                       onClick={handleSubmit}
-                      disabled={!canProceed()}
+                      disabled={!canProceed() || loading}
                       className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
                     >
-                      Find My Advisor
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                      </svg>
+                      {loading ? "Submitting…" : "Find My Advisor"}
+                      {!loading && (
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                      )}
                     </button>
                   )}
                 </div>

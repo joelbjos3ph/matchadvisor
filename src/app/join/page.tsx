@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { supabase } from "@/lib/supabase";
 
 type FormData = {
   fullName: string;
@@ -34,6 +35,8 @@ export default function JoinPage() {
   const [form, setForm] = useState<FormData>(initialData);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   function validate(): boolean {
     const next: Partial<FormData> = {};
@@ -69,9 +72,33 @@ export default function JoinPage() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (validate()) setSubmitted(true);
+    if (!validate()) return;
+
+    setLoading(true);
+    setSubmitError(null);
+
+    const { error } = await supabase.from("professionals").insert({
+      name: form.fullName,
+      email: form.email,
+      phone: form.phone,
+      type: form.profession,
+      licence_number: form.licenceNumber,
+      years_experience: Number(form.yearsOfExperience),
+      bio: form.bio,
+      verified: false,
+    });
+
+    setLoading(false);
+
+    if (error) {
+      console.error("[Supabase error — professionals insert]", error);
+      setSubmitError(`Error: ${error.message}`);
+      return;
+    }
+
+    setSubmitted(true);
   }
 
   if (submitted) {
@@ -294,11 +321,16 @@ export default function JoinPage() {
               </span>
             </div>
 
+            {submitError && (
+              <p className="mb-4 text-sm text-red-500 text-center">{submitError}</p>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl transition-colors shadow-sm shadow-indigo-200 text-base"
+              disabled={loading}
+              className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed text-white font-semibold py-3.5 rounded-xl transition-colors shadow-sm shadow-indigo-200 text-base"
             >
-              Submit application
+              {loading ? "Submitting…" : "Submit application"}
             </button>
           </form>
         </div>

@@ -18,6 +18,8 @@ type Professional = {
   years_experience: number;
   verified: boolean;
   created_at: string;
+  licence_document_url: string | null;
+  selfie_url: string | null;
 };
 
 type ConsumerLead = {
@@ -182,6 +184,7 @@ export default function AdminPage() {
   const [leads, setLeads] = useState<ConsumerLead[]>([]);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState<string | null>(null);
+  const [viewingDocs, setViewingDocs] = useState<string | null>(null);
 
   useEffect(() => {
     if (localStorage.getItem(AUTH_KEY) === "true") setAuthed(true);
@@ -210,6 +213,20 @@ export default function AdminPage() {
       prev.map((p) => (p.id === id ? { ...p, verified: true } : p))
     );
     setVerifying(null);
+  }
+
+  async function handleViewDocuments(p: Professional) {
+    setViewingDocs(p.id);
+    const paths = [p.licence_document_url, p.selfie_url].filter(Boolean) as string[];
+    const results = await Promise.all(
+      paths.map((path) =>
+        supabase.storage.from("licence-documents").createSignedUrl(path, 3600)
+      )
+    );
+    setViewingDocs(null);
+    results.forEach(({ data }) => {
+      if (data?.signedUrl) window.open(data.signedUrl, "_blank");
+    });
   }
 
   function handleLogout() {
@@ -286,7 +303,7 @@ export default function AdminPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-slate-100 bg-slate-50">
-                    {["Name", "Email", "Phone", "Type", "Licence No.", "Experience", "Status", "Date Joined", ""].map((h) => (
+                    {["Name", "Email", "Phone", "Type", "Licence No.", "Experience", "Status", "Date Joined", "Documents", ""].map((h) => (
                       <th key={h} className="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide whitespace-nowrap">
                         {h}
                       </th>
@@ -296,7 +313,7 @@ export default function AdminPage() {
                 <tbody className="divide-y divide-slate-100">
                   {professionals.length === 0 ? (
                     <tr>
-                      <td colSpan={9} className="text-center py-12 text-slate-400">No professionals yet.</td>
+                      <td colSpan={10} className="text-center py-12 text-slate-400">No professionals yet.</td>
                     </tr>
                   ) : (
                     professionals.map((p) => (
@@ -313,6 +330,19 @@ export default function AdminPage() {
                             : <Badge label="Pending" variant="slate" />}
                         </td>
                         <td className="px-5 py-4 text-slate-500 whitespace-nowrap">{formatDate(p.created_at)}</td>
+                        <td className="px-5 py-4 whitespace-nowrap">
+                          {(p.licence_document_url || p.selfie_url) ? (
+                            <button
+                              onClick={() => handleViewDocuments(p)}
+                              disabled={viewingDocs === p.id}
+                              className="text-xs font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-50"
+                            >
+                              {viewingDocs === p.id ? "Opening…" : "View Docs"}
+                            </button>
+                          ) : (
+                            <span className="text-xs text-slate-400">None</span>
+                          )}
+                        </td>
                         <td className="px-5 py-4 whitespace-nowrap">
                           {!p.verified && (
                             <button

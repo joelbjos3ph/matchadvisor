@@ -93,6 +93,24 @@ export default function FindAgentPage() {
     }
 
     setSubmitted(true);
+
+    fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "consumer_lead",
+        category: "property_agent",
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        details: {
+          intent: data.intent,
+          propertyType: data.propertyType,
+          budget: data.budget,
+          timeline: data.timeline,
+        },
+      }),
+    }).catch((err) => console.warn("[Email notification failed]", err));
   }
 
   return (

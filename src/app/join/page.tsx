@@ -99,6 +99,21 @@ export default function JoinPage() {
     }
 
     setSubmitted(true);
+
+    fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "professional",
+        name: form.fullName,
+        email: form.email,
+        phone: form.phone,
+        profession: form.profession,
+        licenceNumber: form.licenceNumber,
+        yearsOfExperience: form.yearsOfExperience,
+        bio: form.bio,
+      }),
+    }).catch((err) => console.warn("[Email notification failed]", err));
   }
 
   if (submitted) {

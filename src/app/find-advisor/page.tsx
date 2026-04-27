@@ -92,6 +92,24 @@ export default function FindAdvisorPage() {
     }
 
     setSubmitted(true);
+
+    fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "consumer_lead",
+        category: "financial_advisor",
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        details: {
+          helpWith: data.helpWith,
+          ageRange: data.ageRange,
+          incomeRange: data.incomeRange,
+          concerns: data.concerns,
+        },
+      }),
+    }).catch((err) => console.warn("[Email notification failed]", err));
   }
 
   return (

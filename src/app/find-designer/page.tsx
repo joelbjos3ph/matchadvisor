@@ -94,6 +94,24 @@ export default function FindDesignerPage() {
     }
 
     setSubmitted(true);
+
+    fetch("/api/send-email", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "consumer_lead",
+        category: "interior_designer",
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        details: {
+          propertyType: data.propertyType,
+          renoType: data.renoType,
+          budget: data.budget,
+          startDate: data.startDate,
+        },
+      }),
+    }).catch((err) => console.warn("[Email notification failed]", err));
   }
 
   const propertyLabel = PROPERTY_TYPES.find((p) => p.value === data.propertyType)?.label ?? "";

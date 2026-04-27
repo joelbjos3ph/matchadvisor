@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const FROM = "onboarding@resend.dev";
-const TO = "joelbjos3ph@gmail.com";
+const TO = "matchadvisorsg@gmail.com";
 
 const TYPE_LABELS: Record<string, string> = {
   financial_advisor: "Financial Advisor",

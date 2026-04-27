@@ -53,8 +53,8 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-900 mb-1">Email us directly</p>
-                    <a href="mailto:hello@matchadvisor.sg" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors">
-                      hello@matchadvisor.sg
+                    <a href="mailto:matchadvisorsg@gmail.com" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium transition-colors">
+                      matchadvisorsg@gmail.com
                     </a>
                   </div>
                 </div>

@@ -10,7 +10,7 @@ export default function Hero() {
       <div className="max-w-6xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 inline-block" />
-          Trusted by thousands of Singaporeans
+          Finding a trusted professional in Singapore just got easier
         </div>
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 tracking-tight leading-tight text-balance mb-6">

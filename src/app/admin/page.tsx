@@ -215,18 +215,13 @@ export default function AdminPage() {
     setVerifying(null);
   }
 
-  async function handleViewDocuments(p: Professional) {
-    setViewingDocs(p.id);
-    const paths = [p.licence_document_url, p.selfie_url].filter(Boolean) as string[];
-    const results = await Promise.all(
-      paths.map((path) =>
-        supabase.storage.from("licence-documents").createSignedUrl(path, 3600)
-      )
-    );
+  async function openDocument(path: string, docKey: string) {
+    setViewingDocs(docKey);
+    const { data } = await supabase.storage
+      .from("licence-documents")
+      .createSignedUrl(path, 3600);
     setViewingDocs(null);
-    results.forEach(({ data }) => {
-      if (data?.signedUrl) window.open(data.signedUrl, "_blank");
-    });
+    if (data?.signedUrl) window.open(data.signedUrl, "_blank");
   }
 
   function handleLogout() {
@@ -332,13 +327,26 @@ export default function AdminPage() {
                         <td className="px-5 py-4 text-slate-500 whitespace-nowrap">{formatDate(p.created_at)}</td>
                         <td className="px-5 py-4 whitespace-nowrap">
                           {(p.licence_document_url || p.selfie_url) ? (
-                            <button
-                              onClick={() => handleViewDocuments(p)}
-                              disabled={viewingDocs === p.id}
-                              className="text-xs font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-50"
-                            >
-                              {viewingDocs === p.id ? "Opening…" : "View Docs"}
-                            </button>
+                            <div className="flex flex-col gap-1.5">
+                              {p.licence_document_url && (
+                                <button
+                                  onClick={() => openDocument(p.licence_document_url!, `${p.id}-licence`)}
+                                  disabled={viewingDocs === `${p.id}-licence`}
+                                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 border border-indigo-200 rounded-lg px-3 py-1.5 hover:bg-indigo-50 transition-colors disabled:opacity-50 text-left"
+                                >
+                                  {viewingDocs === `${p.id}-licence` ? "Opening…" : "Licence"}
+                                </button>
+                              )}
+                              {p.selfie_url && (
+                                <button
+                                  onClick={() => openDocument(p.selfie_url!, `${p.id}-selfie`)}
+                                  disabled={viewingDocs === `${p.id}-selfie`}
+                                  className="text-xs font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 rounded-lg px-3 py-1.5 hover:bg-slate-50 transition-colors disabled:opacity-50 text-left"
+                                >
+                                  {viewingDocs === `${p.id}-selfie` ? "Opening…" : "Selfie"}
+                                </button>
+                              )}
+                            </div>
                           ) : (
                             <span className="text-xs text-slate-400">None</span>
                           )}

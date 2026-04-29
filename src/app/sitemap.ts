@@ -27,6 +27,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: "https://matchadvisor.vercel.app/blog",
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    {
+      url: "https://matchadvisor.vercel.app/blog/hdb-renovation-cost-guide-singapore-2026",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://matchadvisor.vercel.app/blog/hdb-mop-guide-singapore-2026",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://matchadvisor.vercel.app/blog/how-much-life-insurance-do-i-need-singapore",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: "https://matchadvisor.vercel.app/find-advisor",
       lastModified: new Date(),
       changeFrequency: "weekly",

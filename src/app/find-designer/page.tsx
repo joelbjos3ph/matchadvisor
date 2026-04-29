@@ -118,8 +118,6 @@ export default function FindDesignerPage() {
     }).catch((err) => console.warn("[Email notification failed]", err));
   }
 
-  const propertyLabel = PROPERTY_TYPES.find((p) => p.value === data.propertyType)?.label ?? "";
-
   return (
     <>
       <Navbar />

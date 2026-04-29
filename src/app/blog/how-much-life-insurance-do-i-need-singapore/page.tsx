@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "How Much Life Insurance Do I Need in Singapore? A Straight-Talking Guide | MatchAdvisor",
+  title: "How Much Life Insurance Do I Need in Singapore? A Straight-Talking Guide",
   description:
     "The average Singaporean is covered for less than half of what they need. Here's how to calculate the right amount of life insurance — and what to do about critical illness and employer coverage.",
   alternates: {

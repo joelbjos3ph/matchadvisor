@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Blog — Property, Finance & Renovation Guides for Singaporeans | MatchAdvisor",
+  title: {
+    default: "Blog — Property, Finance & Renovation Guides for Singaporeans",
+    template: "%s | MatchAdvisor Blog",
+  },
   description:
     "Practical guides on HDB renovation costs, MOP, life insurance and more — written for Singaporeans, by MatchAdvisor.",
   alternates: {

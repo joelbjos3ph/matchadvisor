@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "HDB MOP Guide Singapore 2026 — When Can You Sell and What Comes Next | MatchAdvisor",
+  title: "HDB MOP Guide Singapore 2026 — When Can You Sell and What Comes Next",
   description:
     "Everything you need to know about HDB Minimum Occupation Period (MOP): how to check it, what you can and cannot do during MOP, and your three options once it ends.",
   alternates: {

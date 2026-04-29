@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "HDB Renovation Cost Guide Singapore 2026 — What You'll Actually Pay | MatchAdvisor",
+  title: "HDB Renovation Cost Guide Singapore 2026 — What You'll Actually Pay",
   description:
     "Planning an HDB renovation in Singapore? Here's what a 3-room, 4-room and 5-room flat renovation actually costs in 2026 — with real breakdowns, honest tips, and red flags to avoid.",
   alternates: {

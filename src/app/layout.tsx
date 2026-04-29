@@ -24,6 +24,9 @@ export const metadata: Metadata = {
     "verified professionals Singapore",
   ],
   authors: [{ name: "MatchAdvisor" }],
+verification: {
+    google: "OPF2xfjaVjXBXmEFcWLbsuu4Eeq76niYHy9xXf5TZZM",
+  },
   creator: "MatchAdvisor",
   robots: {
     index: true,

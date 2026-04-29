@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { supabase } from "@/lib/supabase";
 
-const STEPS = ["Contact", "Your Space", "Budget & Timing"];
+const STEPS = ["Your Space", "Budget & Timing", "Contact Details"];
 
 const PROPERTY_TYPES = [
   { value: "bto", label: "BTO" },
@@ -45,6 +46,9 @@ type FormData = {
   startDate: string;
 };
 
+const inputCls =
+  "w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition";
+
 export default function FindDesignerPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
@@ -61,9 +65,9 @@ export default function FindDesignerPage() {
   });
 
   function canProceed() {
-    if (step === 0) return data.name.trim() && data.email.trim() && data.phone.trim();
-    if (step === 1) return data.propertyType && data.renoType;
-    if (step === 2) return data.budget && data.startDate;
+    if (step === 0) return data.propertyType && data.renoType;
+    if (step === 1) return data.budget && data.startDate;
+    if (step === 2) return data.name.trim() && data.email.trim() && data.phone.trim();
     return true;
   }
 
@@ -117,225 +121,318 @@ export default function FindDesignerPage() {
   const propertyLabel = PROPERTY_TYPES.find((p) => p.value === data.propertyType)?.label ?? "";
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <>
       <Navbar />
-      <div className="pt-24 pb-16 px-6">
-        <div className="max-w-xl mx-auto">
-          {!submitted ? (
-            <>
-              {/* Header */}
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-12 h-12 bg-amber-100 rounded-2xl mb-4">
-                  <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" />
-                  </svg>
+      <main className="min-h-screen bg-slate-50">
+        <div className="pt-24 pb-16 px-6">
+          <div className="max-w-xl mx-auto">
+            {!submitted ? (
+              <>
+                {/* Hero */}
+                <div className="text-center mb-10">
+                  <div className="inline-flex items-center gap-2 bg-amber-50 border border-amber-100 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500 inline-block" />
+                    Interior Designers
+                  </div>
+                  <h1 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">
+                    Find Your Perfect Interior Designer in Singapore
+                  </h1>
+                  <p className="text-slate-500 text-base max-w-md mx-auto mb-6">
+                    Browse verified designers, see their work, and reach out on your own terms — no cold calls, no pressure, ever.
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-3">
+                    {["Verified portfolios", "You reach out first", "Free service"].map((pill) => (
+                      <span
+                        key={pill}
+                        className="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 text-xs font-medium px-3 py-1.5 rounded-full"
+                      >
+                        <span className="text-amber-500 font-bold">✓</span>
+                        {pill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <h1 className="text-2xl font-bold text-slate-900">Find an Interior Designer</h1>
-                <p className="text-slate-500 mt-1 text-sm">Share your renovation plans and we&apos;ll connect you with designers who know your space.</p>
-              </div>
 
-              {/* Progress */}
-              <div className="flex items-center gap-2 mb-8">
-                {STEPS.map((label, i) => (
-                  <div key={i} className="flex-1">
-                    <div className={`h-1.5 rounded-full transition-all duration-300 ${i <= step ? "bg-amber-500" : "bg-slate-200"}`} />
-                    <p className={`text-xs mt-1.5 font-medium ${i === step ? "text-amber-600" : "text-slate-400"}`}>{label}</p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Card */}
-              <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-                {step === 0 && (
-                  <div className="space-y-5">
-                    <h2 className="font-semibold text-slate-900 text-lg">Your contact details</h2>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1.5">Full name</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Priya Nair"
-                        value={data.name}
-                        onChange={(e) => setData({ ...data, name: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
+                {/* Progress */}
+                <div className="flex items-center gap-2 mb-8">
+                  {STEPS.map((label, i) => (
+                    <div key={i} className="flex-1">
+                      <div
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          i <= step ? "bg-amber-500" : "bg-slate-200"
+                        }`}
                       />
+                      <p
+                        className={`text-xs mt-1.5 font-medium ${
+                          i === step ? "text-amber-600" : "text-slate-400"
+                        }`}
+                      >
+                        {label}
+                      </p>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
-                      <input
-                        type="email"
-                        placeholder="you@email.com"
-                        value={data.email}
-                        onChange={(e) => setData({ ...data, email: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1.5">Phone number</label>
-                      <input
-                        type="tel"
-                        placeholder="+65 9XXX XXXX"
-                        value={data.phone}
-                        onChange={(e) => setData({ ...data, phone: e.target.value })}
-                        className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition"
-                      />
-                    </div>
-                  </div>
-                )}
+                  ))}
+                </div>
 
-                {step === 1 && (
-                  <div className="space-y-6">
-                    <h2 className="font-semibold text-slate-900 text-lg">About your space</h2>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-3">Property type</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {PROPERTY_TYPES.map((type) => (
-                          <button
-                            key={type.value}
-                            type="button"
-                            onClick={() => setData({ ...data, propertyType: type.value })}
-                            className={`px-4 py-3 rounded-xl border text-sm font-medium transition-all ${
-                              data.propertyType === type.value
-                                ? "border-amber-500 bg-amber-50 text-amber-700"
-                                : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                            }`}
-                          >
-                            {type.label}
-                          </button>
-                        ))}
+                {/* Card */}
+                <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                  {/* Step 0 — Your Space */}
+                  {step === 0 && (
+                    <div className="space-y-6">
+                      <h2 className="font-semibold text-slate-900 text-lg">About your space</h2>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-3">
+                          Property type
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {PROPERTY_TYPES.map((type) => (
+                            <button
+                              key={type.value}
+                              type="button"
+                              onClick={() => setData({ ...data, propertyType: type.value })}
+                              className={`px-4 py-3 rounded-xl border text-sm font-medium transition-all ${
+                                data.propertyType === type.value
+                                  ? "border-amber-500 bg-amber-50 text-amber-700"
+                                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                              }`}
+                            >
+                              {type.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-3">
+                          Renovation type
+                        </label>
+                        <div className="space-y-3">
+                          {RENO_TYPES.map((type) => (
+                            <button
+                              key={type.value}
+                              type="button"
+                              onClick={() => setData({ ...data, renoType: type.value })}
+                              className={`w-full text-left px-5 py-4 rounded-xl border transition-all ${
+                                data.renoType === type.value
+                                  ? "border-amber-500 bg-amber-50"
+                                  : "border-slate-200 bg-white hover:border-slate-300"
+                              }`}
+                            >
+                              <p
+                                className={`text-sm font-semibold ${
+                                  data.renoType === type.value ? "text-amber-700" : "text-slate-800"
+                                }`}
+                              >
+                                {type.label}
+                              </p>
+                              <p
+                                className={`text-xs mt-0.5 ${
+                                  data.renoType === type.value ? "text-amber-600" : "text-slate-500"
+                                }`}
+                              >
+                                {type.sub}
+                              </p>
+                            </button>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-3">Renovation type</label>
-                      <div className="space-y-3">
-                        {RENO_TYPES.map((type) => (
-                          <button
-                            key={type.value}
-                            type="button"
-                            onClick={() => setData({ ...data, renoType: type.value })}
-                            className={`w-full text-left px-5 py-4 rounded-xl border transition-all ${
-                              data.renoType === type.value
-                                ? "border-amber-500 bg-amber-50"
-                                : "border-slate-200 bg-white hover:border-slate-300"
-                            }`}
-                          >
-                            <p className={`text-sm font-semibold ${data.renoType === type.value ? "text-amber-700" : "text-slate-800"}`}>{type.label}</p>
-                            <p className={`text-xs mt-0.5 ${data.renoType === type.value ? "text-amber-600" : "text-slate-500"}`}>{type.sub}</p>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {step === 2 && (
-                  <div className="space-y-6">
-                    <h2 className="font-semibold text-slate-900 text-lg">Budget & timing</h2>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-3">Renovation budget</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {BUDGETS.map((b) => (
-                          <button
-                            key={b}
-                            type="button"
-                            onClick={() => setData({ ...data, budget: b })}
-                            className={`px-4 py-3 rounded-xl border text-sm font-medium transition-all ${
-                              data.budget === b
-                                ? "border-amber-500 bg-amber-50 text-amber-700"
-                                : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                            }`}
-                          >
-                            {b}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-3">When do you want to start?</label>
-                      <div className="space-y-3">
-                        {START_DATES.map((d) => (
-                          <button
-                            key={d.value}
-                            type="button"
-                            onClick={() => setData({ ...data, startDate: d.value })}
-                            className={`w-full text-left px-5 py-3.5 rounded-xl border text-sm font-medium transition-all ${
-                              data.startDate === d.value
-                                ? "border-amber-500 bg-amber-50 text-amber-700"
-                                : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
-                            }`}
-                          >
-                            {d.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {submitError && (
-                  <p className="mt-4 text-sm text-red-500 text-center">{submitError}</p>
-                )}
-
-                {/* Navigation */}
-                <div className={`flex mt-8 ${step > 0 ? "justify-between" : "justify-end"}`}>
-                  {step > 0 && (
-                    <button onClick={() => setStep(step - 1)} className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors">
-                      ← Back
-                    </button>
                   )}
-                  {step < STEPS.length - 1 ? (
-                    <button
-                      onClick={() => setStep(step + 1)}
-                      disabled={!canProceed()}
-                      className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
-                    >
-                      Continue
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                      </svg>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={handleSubmit}
-                      disabled={!canProceed() || loading}
-                      className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
-                    >
-                      {loading ? "Submitting…" : "Find My Designer"}
-                      {!loading && (
+
+                  {/* Step 1 — Budget & Timing */}
+                  {step === 1 && (
+                    <div className="space-y-6">
+                      <h2 className="font-semibold text-slate-900 text-lg">Budget & timing</h2>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-3">
+                          Renovation budget
+                        </label>
+                        <div className="grid grid-cols-2 gap-3">
+                          {BUDGETS.map((b) => (
+                            <button
+                              key={b}
+                              type="button"
+                              onClick={() => setData({ ...data, budget: b })}
+                              className={`px-4 py-3 rounded-xl border text-sm font-medium transition-all ${
+                                data.budget === b
+                                  ? "border-amber-500 bg-amber-50 text-amber-700"
+                                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                              }`}
+                            >
+                              {b}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-3">
+                          When do you want to start?
+                        </label>
+                        <div className="space-y-3">
+                          {START_DATES.map((d) => (
+                            <button
+                              key={d.value}
+                              type="button"
+                              onClick={() => setData({ ...data, startDate: d.value })}
+                              className={`w-full text-left px-5 py-3.5 rounded-xl border text-sm font-medium transition-all ${
+                                data.startDate === d.value
+                                  ? "border-amber-500 bg-amber-50 text-amber-700"
+                                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
+                              }`}
+                            >
+                              {d.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 2 — Contact Details */}
+                  {step === 2 && (
+                    <div className="space-y-5">
+                      <div>
+                        <h2 className="font-semibold text-slate-900 text-lg">
+                          Almost done — how should designers reach you?
+                        </h2>
+                        <p className="text-xs text-slate-500 mt-2 leading-relaxed">
+                          Your details are only used to match you with designers. We never sell your information or add you to mailing lists.
+                        </p>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                          Full name
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Priya Nair"
+                          value={data.name}
+                          onChange={(e) => setData({ ...data, name: e.target.value })}
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                          Email address
+                        </label>
+                        <input
+                          type="email"
+                          placeholder="you@email.com"
+                          value={data.email}
+                          onChange={(e) => setData({ ...data, email: e.target.value })}
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                          Phone number
+                        </label>
+                        <input
+                          type="tel"
+                          placeholder="+65 9XXX XXXX"
+                          value={data.phone}
+                          onChange={(e) => setData({ ...data, phone: e.target.value })}
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {submitError && (
+                    <p className="mt-4 text-sm text-red-500 text-center">{submitError}</p>
+                  )}
+
+                  {/* Navigation */}
+                  <div className={`flex mt-8 ${step > 0 ? "justify-between" : "justify-end"}`}>
+                    {step > 0 && (
+                      <button
+                        onClick={() => setStep(step - 1)}
+                        className="text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                      >
+                        ← Back
+                      </button>
+                    )}
+                    {step < STEPS.length - 1 ? (
+                      <button
+                        onClick={() => setStep(step + 1)}
+                        disabled={!canProceed()}
+                        className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
+                      >
+                        Continue
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                         </svg>
-                      )}
-                    </button>
-                  )}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleSubmit}
+                        disabled={!canProceed() || loading}
+                        className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
+                      >
+                        {loading ? "Submitting…" : "Find My Designer"}
+                        {!loading && (
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                          </svg>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
 
-              <p className="text-center text-xs text-slate-400 mt-6">Free service · No cold calls · Vetted designers with proven portfolios</p>
-            </>
-          ) : (
-            /* Confirmation */
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-6">
-                <svg className="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <p className="text-center text-xs text-slate-400 mt-6">
+                  Free service · No cold calls · You stay in control
+                </p>
+              </>
+            ) : (
+              /* Confirmation */
+              <div className="text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-amber-100 rounded-full mb-6">
+                  <svg className="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 mb-3">
+                  You&apos;re all set, {data.name.split(" ")[0]}!
+                </h2>
+                <p className="text-slate-600 text-base mb-2">
+                  We will match you with vetted professionals within 24 hours.
+                </p>
+                <p className="text-slate-500 text-sm mb-8">
+                  A confirmation has been sent to{" "}
+                  <span className="font-medium text-slate-700">{data.email}</span>.
+                </p>
+                <div className="bg-amber-50 border border-amber-100 rounded-2xl p-6 text-left mb-8">
+                  <p className="text-sm font-semibold text-amber-800 mb-3">What happens next?</p>
+                  <ul className="text-sm text-amber-700 space-y-2.5">
+                    <li className="flex items-start gap-2">
+                      <span className="font-bold mt-0.5">·</span>
+                      <span>
+                        We&apos;ll shortlist verified designers who match your style and budget
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-bold mt-0.5">·</span>
+                      <span>You&apos;ll receive a curated list — no cold calls, no spam</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="font-bold mt-0.5">·</span>
+                      <span>
+                        Browse their profiles and reach out to whoever feels right
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <a
+                  href="/"
+                  className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors"
+                >
+                  ← Back to MatchAdvisor
+                </a>
               </div>
-              <h2 className="text-2xl font-bold text-slate-900 mb-3">You&apos;re all set, {data.name.split(" ")[0]}!</h2>
-              <p className="text-slate-600 text-base mb-2">We will match you with vetted professionals within 24 hours.</p>
-              <p className="text-slate-500 text-sm mb-8">A confirmation has been sent to <span className="font-medium text-slate-700">{data.email}</span>.</p>
-              <div className="bg-amber-50 border border-amber-100 rounded-2xl p-6 text-left mb-8">
-                <p className="text-sm font-semibold text-amber-800 mb-1">What happens next?</p>
-                <ul className="text-sm text-amber-700 space-y-1.5">
-                  <li>· We shortlist designers experienced with {propertyLabel} renovations in your budget</li>
-                  <li>· You&apos;ll receive an introduction within 24 hours</li>
-                  <li>· Browse portfolios and meet designers before committing to anything</li>
-                </ul>
-              </div>
-              <a href="/" className="text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors">← Back to MatchAdvisor</a>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }

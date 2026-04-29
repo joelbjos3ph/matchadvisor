@@ -21,9 +21,36 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "MatchAdvisor",
+  url: "https://matchadvisor.vercel.app",
+  description:
+    "Singapore marketplace connecting consumers with verified financial advisors, property agents and interior designers.",
+  areaServed: "Singapore",
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "MatchAdvisor",
+  url: "https://matchadvisor.vercel.app",
+  description:
+    "Find verified financial advisors, property agents and interior designers in Singapore.",
+};
+
 export default function Home() {
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
       <Navbar />
       <Hero />
       <Categories />
@@ -33,3 +60,4 @@ export default function Home() {
     </main>
   );
 }
+

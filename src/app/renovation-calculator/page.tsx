@@ -582,18 +582,15 @@ function Results({ f, onBack }: { f: FormState; onBack: () => void }) {
 
       {/* CTA */}
       <div className="bg-indigo-600 rounded-2xl p-6 text-center">
-        <p className="text-white font-bold text-lg mb-1">Ready to bring your home to life?</p>
+        <p className="text-white font-bold text-lg mb-1">Ready to bring your renovation to life?</p>
         <p className="text-indigo-200 text-sm mb-4">
-          Get matched with a verified interior designer who specialises in your property type and renovation style.
+          Browse verified interior designers and reach out on your own terms — no cold calls, no pressure, ever. You decide who to contact.
         </p>
         <Link
           href="/find-designer"
           className="inline-flex items-center gap-2 bg-white text-indigo-600 hover:bg-indigo-50 font-bold px-6 py-3 rounded-xl transition-colors text-sm"
         >
-          Get matched with a verified interior designer
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-          </svg>
+          Browse verified interior designers →
         </Link>
       </div>
 

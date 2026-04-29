@@ -21,6 +21,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
+      url: "https://matchadvisor.vercel.app/renovation-calculator",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: "https://matchadvisor.vercel.app/find-advisor",
       lastModified: new Date(),
       changeFrequency: "weekly",

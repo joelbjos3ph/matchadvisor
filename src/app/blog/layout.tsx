@@ -16,6 +16,10 @@ export const metadata: Metadata = {
       "Practical guides on HDB renovation costs, MOP, life insurance and more — written for Singaporeans, by MatchAdvisor.",
     url: "https://matchadvisor.vercel.app/blog",
   },
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
 export default function BlogLayout({ children }: { children: React.ReactNode }) {

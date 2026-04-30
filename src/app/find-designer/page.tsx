@@ -49,11 +49,24 @@ type FormData = {
 const inputCls =
   "w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition";
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+}
+
+function isValidPhone(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length === 8) return /^[89]/.test(digits);
+  if (digits.length === 10) return /^65[89]/.test(digits);
+  return false;
+}
+
 export default function FindDesignerPage() {
   const [step, setStep] = useState(0);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [data, setData] = useState<FormData>({
     name: "",
     email: "",
@@ -67,7 +80,7 @@ export default function FindDesignerPage() {
   function canProceed() {
     if (step === 0) return data.propertyType && data.renoType;
     if (step === 1) return data.budget && data.startDate;
-    if (step === 2) return data.name.trim() && data.email.trim() && data.phone.trim();
+    if (step === 2) return data.name.trim() && isValidEmail(data.email) && isValidPhone(data.phone);
     return true;
   }
 
@@ -316,8 +329,12 @@ export default function FindDesignerPage() {
                           placeholder="you@email.com"
                           value={data.email}
                           onChange={(e) => setData({ ...data, email: e.target.value })}
+                          onBlur={() => setEmailTouched(true)}
                           className={inputCls}
                         />
+                        {emailTouched && !isValidEmail(data.email) && (
+                          <p className="mt-1.5 text-xs text-red-500">Please enter a valid email address — we&apos;ll send your confirmation here.</p>
+                        )}
                       </div>
                       <div>
                         <label className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -328,8 +345,12 @@ export default function FindDesignerPage() {
                           placeholder="+65 9XXX XXXX"
                           value={data.phone}
                           onChange={(e) => setData({ ...data, phone: e.target.value })}
+                          onBlur={() => setPhoneTouched(true)}
                           className={inputCls}
                         />
+                        {phoneTouched && !isValidPhone(data.phone) && (
+                          <p className="mt-1.5 text-xs text-red-500">Please enter a valid Singapore mobile number.</p>
+                        )}
                       </div>
                     </div>
                   )}

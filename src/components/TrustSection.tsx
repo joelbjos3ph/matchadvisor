@@ -97,8 +97,8 @@ export default function TrustSection() {
         <div className="mt-16 border-t border-slate-200 pt-12">
           <div className="bg-indigo-50 border border-indigo-100 rounded-2xl px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-indigo-800 mb-1">MatchAdvisor is launching soon in Singapore.</p>
-              <p className="text-sm text-indigo-700">Join now to be among our first verified professionals on the platform.</p>
+              <p className="text-sm font-semibold text-indigo-800 mb-1">MatchAdvisor is live in Singapore.</p>
+              <p className="text-sm text-indigo-700">Join our growing network of verified professionals and get matched with consumers who are ready to act.</p>
             </div>
             <a
               href="/join"

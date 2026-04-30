@@ -55,10 +55,10 @@ function confirmationEmail(firstName: string, bodyText: string) {
       <p style="margin:0 0 16px;">Hi ${firstName},</p>
       ${bodyText}
       <p style="margin:24px 0 4px;">Joel</p>
-      <p style="margin:0;color:#64748b;font-size:13px;">Founder, MatchAdvisor<br>joelbjos3ph@gmail.com</p>
+      <p style="margin:0;color:#64748b;font-size:13px;">Founder, MatchAdvisor<br>matchadvisorsg@gmail.com</p>
     </div>
     <div style="padding:16px 32px;background:#f8fafc;border-top:1px solid #e2e8f0;">
-      <p style="margin:0;font-size:12px;color:#94a3b8;">Sent by MatchAdvisor · joelbjos3ph@gmail.com</p>
+      <p style="margin:0;font-size:12px;color:#94a3b8;">Sent by MatchAdvisor · matchadvisorsg@gmail.com</p>
     </div>
   </div>
 </body>
@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
 
   const [notifyResult, confirmResult] = await Promise.all([
     resend.emails.send({ from: FROM, to: TO, subject, html }),
-    resend.emails.send({ from: FROM, to: body.email, subject: confirmSubject, html: confirmHtml }),
+    resend.emails.send({ from: FROM, to: body.email, subject: confirmSubject, html: confirmHtml, replyTo: "matchadvisorsg@gmail.com" }),
   ]);
 
   const error = notifyResult.error ?? confirmResult.error;

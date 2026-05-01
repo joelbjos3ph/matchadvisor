@@ -7,9 +7,29 @@ import Footer from "@/components/Footer";
 export default function ContactPage() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   function canSubmit() {
     return form.name.trim() && form.email.trim() && form.message.trim();
+  }
+
+  async function handleSubmit() {
+    setLoading(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch("/api/send-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: "contact", name: form.name, email: form.email, message: form.message }),
+      });
+      if (!res.ok) throw new Error("Failed to send message.");
+      setSubmitted(true);
+    } catch {
+      setSubmitError("Something went wrong. Please try again or email us directly at matchadvisorsg@gmail.com.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -113,15 +133,20 @@ export default function ContactPage() {
                     className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
                   />
                 </div>
+                {submitError && (
+                  <p className="text-sm text-red-500">{submitError}</p>
+                )}
                 <button
-                  onClick={() => setSubmitted(true)}
-                  disabled={!canSubmit()}
+                  onClick={handleSubmit}
+                  disabled={!canSubmit() || loading}
                   className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold px-6 py-3 rounded-xl transition-colors shadow-sm shadow-indigo-200"
                 >
-                  Send message
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                  </svg>
+                  {loading ? "Sending…" : "Send message"}
+                  {!loading && (
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  )}
                 </button>
               </div>
             </div>

@@ -143,6 +143,19 @@ export async function POST(req: NextRequest) {
        <p style="margin:0 0 16px;">Based on what you've shared, we'll match you with ${professionalLabel} who fits your specific situation. You can expect to hear from us within 24 hours.</p>
        <p style="margin:0;">In the meantime, if you have any questions just reply to this email.</p>`
     );
+  } else if (body.type === "contact") {
+    subject = `New contact message — MatchAdvisor`;
+    html = emailShell(
+      `New Contact Message`,
+      row("Name", body.name) +
+      row("Email", body.email) +
+      row("Message", body.message)
+    );
+    confirmSubject = "We've received your message — MatchAdvisor";
+    confirmHtml = confirmationEmail(
+      firstName,
+      `<p style="margin:0 0 16px;">Thanks for reaching out. We've received your message and will get back to you within 1 business day.</p>`
+    );
   } else {
     return NextResponse.json({ error: "Unknown email type" }, { status: 400 });
   }

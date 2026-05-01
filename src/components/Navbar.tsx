@@ -34,13 +34,6 @@ export default function Navbar() {
           >
             How it works
           </a>
-          <a
-            href="/blog"
-            className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors hidden sm:block"
-          >
-            Blog
-          </a>
-
           {/* Tools dropdown */}
           <div className="relative hidden sm:block" ref={dropdownRef}>
             <button
